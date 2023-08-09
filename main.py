@@ -1,6 +1,7 @@
 # Libs
 from ftplib import FTP
 import os
+from datetime import date
 from dotenv import load_dotenv
 
 # Env vars
@@ -36,10 +37,15 @@ def download_folder(ftp, remote_path, local_path):
 
 # Folder remote and local
 remote_directory = os.getenv('FTP_DIR')
-local_directory = './config'
+
+# Create folder if it doesn't exist
+folder = os.getenv('LOC_DIR') + '_' + str(date.today())
+if not os.path.exists(folder):
+    os.makedirs(folder)
+
 
 # Login
 with FTP(os.getenv('FTP_HOST')) as ftp:
   ftp.login(user = os.getenv('FTP_USER'), passwd = os.getenv('FTP_PASS'))
-  download_folder(ftp, remote_directory, local_directory)
-  
+  download_folder(ftp, remote_directory, folder)
+  ftp.quit()
